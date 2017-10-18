@@ -114,7 +114,9 @@ def run(test, params, env):
         client_vm.verify_alive()
         client_ctl = client_vm.wait_for_login(timeout=login_timeout)
         if params.get("pre_cmd"):
-            client_ctl.cmd_status_output(params["pre_cmd"], timeout=600)
+            status = client_ctl.cmd_status(params["pre_cmd"], timeout=600)
+            if status:
+                logging.warn("Error in assigning ip for clients, following test may fail.")
         error.context("Stop fireware on netperf client guest.",
                       logging.info)
         client_ctl.cmd("service iptables stop; iptables -F",
