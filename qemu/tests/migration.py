@@ -121,8 +121,8 @@ def run(test, params, env):
     def check_dma():
         dmesg_pattern = params.get("dmesg_pattern",
                                    "ata.*?configured for PIO")
-        dma_pattern = params.get("dma_pattern", "DMA.*?\(\?\)$")
-        pio_pattern = params.get("pio_pattern", "PIO.*?pio\d+\s+$")
+        dma_pattern = params.get("dma_pattern", r"DMA.*?\(\?\)$")
+        pio_pattern = params.get("pio_pattern", r"PIO.*?pio\d+\s+$")
         hdparm_cmd = params.get("hdparm_cmd",
                                 "i=`ls /dev/[shv]da` ; hdparm -I $i")
         session_dma = vm.wait_for_login()
@@ -208,7 +208,7 @@ def run(test, params, env):
 
             # Migrate the VM
             ping_pong = params.get("ping_pong", 1)
-            for i in xrange(int(ping_pong)):
+            for i in range(int(ping_pong)):
                 if i % 2 == 0:
                     logging.info("Round %s ping..." % str(i / 2))
                 else:
@@ -259,7 +259,7 @@ def run(test, params, env):
                 if bg_kill_cmd is not None:
                     try:
                         session2.cmd(bg_kill_cmd)
-                    except aexpect.ShellCmdError, details:
+                    except aexpect.ShellCmdError as details:
                         # If the migration_bg_kill_command rc differs from
                         # ignore_status, it means the migration_bg_command is
                         # no longer alive. Let's ignore the failure here if

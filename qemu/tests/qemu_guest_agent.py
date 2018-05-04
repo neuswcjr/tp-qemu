@@ -274,7 +274,7 @@ class QemuGuestAgentBasicCheck(QemuGuestAgentTest):
             self.vm.verify_alive()
 
         session = self._get_session(params, self.vm)
-        for i in xrange(repeats):
+        for i in range(repeats):
             error_context.context("Repeat: %s/%s" % (i + 1, repeats),
                                   logging.info)
             if self._check_ga_pkg(session, params.get("gagent_pkg_check_cmd")):
@@ -301,7 +301,7 @@ class QemuGuestAgentBasicCheck(QemuGuestAgentTest):
             self.vm = self.env.get_vm(params["main_vm"])
             self.vm.verify_alive()
         session = self._get_session(params, self.vm)
-        for i in xrange(repeats):
+        for i in range(repeats):
             error_context.context("Repeat: %s/%s" % (i + 1, repeats),
                                   logging.info)
             self.gagent_stop(session, self.vm)
@@ -377,7 +377,7 @@ class QemuGuestAgentBasicCheck(QemuGuestAgentTest):
         try:
             session = self._get_session(self.params, None)
             session.close()
-        except Exception, detail:
+        except Exception as detail:
             test.fail("Could not login to guest"
                       " detail: '%s'" % detail)
 
@@ -399,7 +399,7 @@ class QemuGuestAgentBasicCheck(QemuGuestAgentTest):
         # Since VM is halted, force shutdown it.
         try:
             self.vm.destroy(gracefully=False)
-        except Exception, detail:
+        except Exception as detail:
             logging.warn("Got an exception when force destroying guest:"
                          " '%s'", detail)
 
@@ -869,7 +869,7 @@ class QemuGuestAgentBasicCheck(QemuGuestAgentTest):
             # Thaw fs finally, avoid problem in following cases.
             try:
                 self.gagent.fsthaw(check_status=False)
-            except Exception, detail:
+            except Exception as detail:
                 # Ignore exception for this thaw action.
                 logging.warn("Finally failed to thaw guest fs,"
                              " detail: '%s'", detail)

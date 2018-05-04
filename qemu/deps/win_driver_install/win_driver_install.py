@@ -117,7 +117,7 @@ def get_current_driver_ver(device_name):
     :param device_name: Corresponding device name with driver.
     :return: Current driver version.
     """
-    key = "\d*\.\d*\.\d*\.\d*"
+    key = r"\d*\.\d*\.\d*\.\d*"
     get_driver_ver_cmd = ("wmic path win32_pnpsigneddriver where"
                           " Devicename='%s' get driverversion" % device_name)
     driver_version = os.popen(get_driver_ver_cmd).read()
@@ -167,7 +167,7 @@ def show_log_output(result_file):
     :param result_file: File which saves execution logs.
     """
     with open(result_file) as fd:
-        print os.linesep.join(fd.readlines())
+        print(os.linesep.join(fd.readlines()))
 
 
 if __name__ == "__main__":
@@ -229,7 +229,7 @@ if __name__ == "__main__":
         verify_driver_ver(arguments.driver_path, arguments.device_name,
                           arguments.driver_name)
     elif arguments.log_output:
-        print "Execution log:\n"
+        print("Execution log:\n")
         show_log_output(result_file)
-        print "DPINST.log:\n"
+        print("DPINST.log:\n")
         show_log_output(r"C:\Windows\DPINST.log")

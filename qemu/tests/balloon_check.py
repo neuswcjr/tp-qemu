@@ -24,14 +24,14 @@ class BallooningTest(MemoryBaseTest):
 
         self.vm = env.get_vm(params["main_vm"])
         self.session = self.get_session(self.vm)
-        self.env["balloon_test_setup_ready"] = False
+        self.params["balloon_test_setup_ready"] = False
         if self.params.get('os_type') == 'windows':
             sleep_time = 180
         else:
             sleep_time = 90
         logging.info("Waiting %d seconds for guest's applications up" % sleep_time)
         time.sleep(sleep_time)
-        self.env["balloon_test_setup_ready"] = True
+        self.params["balloon_test_setup_ready"] = True
         self.ori_mem = self.get_vm_mem(self.vm)
         self.current_mmem = self.get_ballooned_memory()
         if self.current_mmem != self.ori_mem:
@@ -103,7 +103,7 @@ class BallooningTest(MemoryBaseTest):
         try:
             self.vm.balloon(new_mem)
             self.env["balloon_test"] = 1
-        except Exception, e:
+        except Exception as e:
             if self.params.get('illegal_value_check', 'no') == 'no' and new_mem != self.get_ballooned_memory():
                 raise exceptions.TestFail("Balloon memory fail with error"
                                           " message: %s" % e)
@@ -174,7 +174,7 @@ class BallooningTest(MemoryBaseTest):
         """
         logging.info("Wait until guest memory don't change")
         is_stable = self._mem_state()
-        utils_misc.wait_for(is_stable.next, timeout, step=10.0)
+        utils_misc.wait_for(lambda: next(is_stable), timeout, step=10.0)
 
     def get_memory_boundary(self, balloon_type=''):
         """
@@ -352,10 +352,10 @@ class BallooningTestWin(BallooningTest):
         :param session: shell Object
         :return string: freespace M-bytes
         """
-        cmd = 'typeperf "\Memory\Free & Zero Page List Bytes" -sc 1'
+        cmd = r'typeperf "\Memory\Free & Zero Page List Bytes" -sc 1'
         status, output = session.cmd_status_output(cmd)
         if status == 0:
-            free = "%s" % re.findall("\d+\.\d+", output)[2]
+            free = "%s" % re.findall(r"\d+\.\d+", output)[2]
             free = float(utils_misc.normalize_data_size(free, order_magnitude="M"))
             return int(free)
         else:

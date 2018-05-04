@@ -73,7 +73,7 @@ class EnospcConfig(object):
         except Exception:
             try:
                 self.cleanup()
-            except Exception, e:
+            except Exception as e:
                 logging.warn(e)
             raise
 
@@ -140,7 +140,7 @@ def run(test, params, env):
 
     drive_format = params["drive_format"]
     output = session_serial.cmd_output("dir /dev")
-    devname = "/dev/" + re.findall("([shv]db)\s", output)[0]
+    devname = "/dev/" + re.findall(r"([shv]db)\s", output)[0]
     cmd = params["background_cmd"]
     cmd %= devname
 
@@ -162,14 +162,14 @@ def run(test, params, env):
                     image = qemu_storage.QemuImg(image_params,
                                                  data_dir.get_data_dir(), image_name)
                     image.check_image(image_params, data_dir.get_data_dir(), force_share=True)
-                except virt_vm.VMError, e:
+                except virt_vm.VMError as e:
                     logging.error(e)
             error_context.context("Guest paused, extending Logical Volume size",
                                   logging.info)
             try:
                 process.run("lvextend -L +200M %s" % logical_volume)
-            except process.CmdError, e:
-                logging.debug(e.result_obj.stdout)
+            except process.CmdError as e:
+                logging.debug(e.result.stdout)
             error_context.context("Continue paused guest", logging.info)
             vm.resume()
         elif not vm.monitor.verify_status("running"):
@@ -183,7 +183,7 @@ def run(test, params, env):
     vm.destroy(gracefully=vm.monitor.verify_status("running"))
     try:
         enospc_config.cleanup()
-    except Exception, e:
+    except Exception as e:
         logging.warn(e)
 
     if pause_n == 0:
